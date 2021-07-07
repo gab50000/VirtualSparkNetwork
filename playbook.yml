@@ -1,0 +1,14 @@
+---
+- name: Test
+  hosts: all
+
+  tasks:
+    - name: Extract spark
+      ansible.builtin.unarchive:
+        src: /vagrant/spark-3.1.2-bin-hadoop3.2.tgz
+        dest: /home/vagrant
+        remote_src: yes
+    - name: Set SPARK_HOME 
+      lineinfile:
+        path: /home/vagrant/.bashrc
+        line: export SPARK_HOME=/home/vagrant/spark-3.1.2-bin-hadoop3.2

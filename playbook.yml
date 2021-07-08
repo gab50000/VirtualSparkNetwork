@@ -1,6 +1,28 @@
 ---
-- name: Test
-  hosts: all
+- name: ssh setup
+  hosts: master_node
+
+  tasks:
+    - name: Generate ssh keys
+      command: ssh-keygen -b 4096 -f /home/vagrant/.ssh/id_rsa -N ""
+      args:
+        creates: /home/vagrant/.ssh/id_rsa
+
+    - name: Copy public ssh key to host
+      fetch:
+        src: "~/.ssh/id_rsa.pub"
+        dest: "buffer/{{ansible_hostname}}-id_rsa.pub"
+        flat: yes
+
+    # - name: Copy public ssh key to workers
+    #   fetch:
+    #     src: "buffer/{{ansible_hostname}}-id_rsa.pub"
+    #     dest: "~/.ssh/id_rsa.pub"
+
+
+
+- name: Setup Spark master
+  hosts: master_node
 
   tasks:
     - name: Install Java

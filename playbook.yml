@@ -11,15 +11,23 @@
     - name: Copy public ssh key to host
       fetch:
         src: "~/.ssh/id_rsa.pub"
-        dest: "buffer/{{ansible_hostname}}-id_rsa.pub"
+        dest: "buffer/id_rsa.pub"
         flat: yes
 
-    # - name: Copy public ssh key to workers
-    #   fetch:
-    #     src: "buffer/{{ansible_hostname}}-id_rsa.pub"
-    #     dest: "~/.ssh/id_rsa.pub"
+- name: ssh setup workers
+  hosts: worker_nodes
+  tasks:
+    - name: Copy public ssh key to workers
+      copy:
+        src: "buffer/id_rsa.pub"
+        dest: "~/.ssh/id_rsa.pub"
+        mode: "400"
 
-
+    - name: Update authorized_keys
+      authorized_key:
+        user: vagrant
+        state: present
+        key: /home/vagrant/.ssh/id_rsa.pub
 
 - name: Setup Spark master
   hosts: master_node

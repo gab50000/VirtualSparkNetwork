@@ -1,0 +1,46 @@
+---
+- name: Setup
+  hosts: master_node
+
+  tasks:
+    - name: Generate ssh keys
+      command: ssh-keygen -b 4096 -f /home/vagrant/.ssh/id_rsa -N ""
+      args:
+        creates: /home/vagrant/.ssh/id_rsa
+
+    - name: Copy public ssh key to host
+      fetch:
+        src: "~/.ssh/id_rsa.pub"
+        dest: "buffer/id_rsa.pub"
+        flat: yes
+
+- name: ssh setup workers
+  hosts: worker_nodes
+  tasks:
+    - name: Copy public ssh key to workers
+      copy:
+        src: "buffer/id_rsa.pub"
+        dest: "~/.ssh/id_rsa.pub"
+        mode: "400"
+
+    - name: Update authorized_keys
+      authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', 'buffer/id_rsa.pub') }}"
+
+- name: Start Spark master
+  hosts: master_node
+  tasks:
+    - name: Start
+      ansible.builtin.shell:
+        cmd: ./stop-master.sh && ./start-master.sh
+        chdir: /home/vagrant/spark-3.1.2-bin-hadoop3.2/sbin
+
+- name: Start Spark workers
+  hosts: worker_nodes
+  tasks:
+    - name: Start
+      ansible.builtin.shell:
+        cmd: ./stop-worker.sh && ./start-worker.sh spark://vagrant.vm:7077
+        chdir: /home/vagrant/spark-3.1.2-bin-hadoop3.2/sbin

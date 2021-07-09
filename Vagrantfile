@@ -14,16 +14,24 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "hashicorp/bionic64"
 
-  config.vm.define "worker1" do |worker1|
-    worker1.vm.network "private_network", ip: "172.28.128.2"
-  end
-  config.vm.define "worker2" do |worker2|
-    worker2.vm.network "private_network", ip: "172.28.128.3"
+
+  (1..2).each do |i|
+    config.vm.define "worker#{i}" do |worker1|
+      worker1.vm.network "private_network", ip: "172.28.128.#{i+1}"
+    end
   end
 
   config.vm.define "master" do |master|
     master.vm.network "private_network", ip: "172.28.128.1"
     master.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "172.28.128.1"
+    master.vm.provision "ansible" do |ansible|
+      ansible.playbook = "master_worker_setup.yml"
+      ansible.groups = {
+        "master_node" => ["master"],
+        "worker_nodes" => ["worker[1:2]"],
+      }
+      ansible.limit = "all"
+  end
   end
 
   # Share an additional folder to the guest VM. The first argument is

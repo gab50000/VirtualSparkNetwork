@@ -1,36 +1,6 @@
----
-- name: ssh setup
-  hosts: master_node
 
-  tasks:
-    - name: Generate ssh keys
-      command: ssh-keygen -b 4096 -f /home/vagrant/.ssh/id_rsa -N ""
-      args:
-        creates: /home/vagrant/.ssh/id_rsa
-
-    - name: Copy public ssh key to host
-      fetch:
-        src: "~/.ssh/id_rsa.pub"
-        dest: "buffer/id_rsa.pub"
-        flat: yes
-
-- name: ssh setup workers
-  hosts: worker_nodes
-  tasks:
-    - name: Copy public ssh key to workers
-      copy:
-        src: "buffer/id_rsa.pub"
-        dest: "~/.ssh/id_rsa.pub"
-        mode: "400"
-
-    - name: Update authorized_keys
-      authorized_key:
-        user: vagrant
-        state: present
-        key: /home/vagrant/.ssh/id_rsa.pub
-
-- name: Setup Spark master
-  hosts: master_node
+- name: Spark requisites
+  hosts: all
 
   tasks:
     - name: Install Java
@@ -49,7 +19,3 @@
         path: /home/vagrant/.bashrc
         line: export SPARK_HOME=/home/vagrant/spark-3.1.2-bin-hadoop3.2
 
-    - name: Start Spark master
-      ansible.builtin.shell:
-        cmd: ./start-master.sh
-        chdir: /home/vagrant/spark-3.1.2-bin-hadoop3.2/sbin

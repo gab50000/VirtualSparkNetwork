@@ -17,13 +17,14 @@ Vagrant.configure("2") do |config|
 
   (1..2).each do |i|
     config.vm.define "worker#{i}" do |worker1|
-      worker1.vm.network "private_network", ip: "172.28.128.#{i+1}"
+      worker1.vm.network "private_network", 
+      ip: "192.168.123.#{1 + i}"
     end
   end
 
   config.vm.define "master" do |master|
-    master.vm.network "private_network", ip: "172.28.128.1"
-    master.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "172.28.128.1"
+    master.vm.network "private_network", 
+    ip: "192.168.123.4"
     master.vm.provision "ansible" do |ansible|
       ansible.playbook = "master_worker_setup.yml"
       ansible.groups = {

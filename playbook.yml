@@ -3,6 +3,11 @@
   hosts: all
 
   tasks:
+    # - name: Print all available facts
+    #   ansible.builtin.debug:
+    #     var: ansible_facts
+
+
     - name: Install Java
       apt:
         name: default-jre
@@ -17,5 +22,12 @@
     - name: Set SPARK_HOME 
       lineinfile:
         path: /home/vagrant/.bashrc
+        regexp: "export SPARK_HOME=/home/vagrant/spark-3.1.2-bin-hadoop3.2"
         line: export SPARK_HOME=/home/vagrant/spark-3.1.2-bin-hadoop3.2
+
+    - name: Set SPARK_LOCAL_IP
+      lineinfile:
+        path: /home/vagrant/.bashrc
+        regexp: "export SPARK_LOCAL_IP=192.168.123.4"
+        line: export SPARK_LOCAL_IP=192.168.123.4
 

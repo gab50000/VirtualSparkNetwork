@@ -20,7 +20,8 @@ GROUPS = {
 }
 
 EXTRA_VARS = {
-  spark_local_ip: {}
+  spark_local_ip: {},
+  vm_configs: VM_CONFIGS,
 }
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure

@@ -1,3 +1,4 @@
 .vagrant/
+buffer/
 *.zip
 *.tgz

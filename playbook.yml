@@ -28,6 +28,6 @@
     - name: Set SPARK_LOCAL_IP
       lineinfile:
         path: /home/vagrant/.bashrc
-        regexp: "export SPARK_LOCAL_IP=192.168.123.4"
-        line: export SPARK_LOCAL_IP=192.168.123.4
+        regexp: "export SPARK_LOCAL_IP={{ spark_local_ip[ansible_hostname] }}"
+        line: "export SPARK_LOCAL_IP={{ spark_local_ip[ansible_hostname] }}"
 

@@ -19,6 +19,10 @@ GROUPS = {
   "all" => ["master", "worker[1:#{NUM_WORKERS}]"]
 }
 
+EXTRA_VARS = {
+  spark_local_ip: {}
+}
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -36,6 +40,7 @@ Vagrant.configure("2") do |config|
   VM_CONFIGS.each_with_index do |cfg, idx|
     hostname = cfg[:name]
     ip = cfg[:ip]
+    EXTRA_VARS[:spark_local_ip][hostname] = ip
     config.vm.define hostname do |machine|
       machine.vm.network "private_network", 
       ip: ip
@@ -55,5 +60,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbook.yml"
     ansible.groups = GROUPS
+    ansible.extra_vars = EXTRA_VARS
   end
 end

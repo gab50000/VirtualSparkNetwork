@@ -1,4 +1,28 @@
 ---
+- name: Distribute host addresses
+  hosts: master_node
+  tasks:
+    - name: Distribute host addresses
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        state: present
+        regexp: "192.168.123.2 worker1\n192.168.123.3 worker2"
+        line: "192.168.123.2 worker1\n192.168.123.3 worker2"
+        backup: yes
+      become: yes
+
+- name: Distribute host addresses
+  hosts: worker_nodes
+  tasks:
+    - name: Distribute host addresses
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        state: present
+        regexp: "192.168.123.4 master"
+        line: "192.168.123.4 master"
+        backup: yes
+      become: yes
+
 - name: Setup
   hosts: master_node
 

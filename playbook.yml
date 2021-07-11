@@ -1,13 +1,6 @@
-
 - name: Spark requisites
   hosts: all
-
   tasks:
-    # - name: Print all available facts
-    #   ansible.builtin.debug:
-    #     var: ansible_facts
-
-
     - name: Install Java
       apt:
         name: default-jre

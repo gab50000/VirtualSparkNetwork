@@ -4,12 +4,12 @@
 NUM_WORKERS = 2
 
 VM_CONFIGS = [
-  {name: "master", ip: "192.168.123.4"},
+  {name: "master", ip: "192.168.123.3"},
 ]
 
 (1..NUM_WORKERS).each do |i|
   VM_CONFIGS.append(
-    {name: "worker#{i}", ip: "192.168.123.#{i+1}"},
+    {name: "worker#{i}", ip: "192.168.123.#{3 + i}"},
   )
 end
 
@@ -36,6 +36,11 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "hashicorp/bionic64"
+  config.vm.provider "virtualbox" do |vb|
+    vb.linked_clone = true
+    vb.memory = 2048
+    vb.cpus = 2
+  end
 
 
   VM_CONFIGS.each_with_index do |cfg, idx|

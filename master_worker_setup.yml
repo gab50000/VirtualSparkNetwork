@@ -44,3 +44,17 @@
       ansible.builtin.shell:
         cmd: ./stop-worker.sh && ./start-worker.sh spark://master:7077
         chdir: /home/vagrant/spark-3.1.2-bin-hadoop3.2/sbin
+
+- name: Setup Livy
+  hosts: master_node
+  tasks:
+    - name: Extract Livy
+      ansible.builtin.unarchive:
+        src: /vagrant/apache-livy-0.7.1-incubating-bin.zip
+        dest: /home/vagrant
+        remote_src: yes
+
+    - name: Start Livy
+      ansible.builtin.shell:
+        cmd: ./livy-server stop && ./livy-server start
+        chdir: /home/vagrant/apache-livy-0.7.1-incubating-bin/bin

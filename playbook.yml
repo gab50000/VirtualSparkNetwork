@@ -1,3 +1,11 @@
+- name: Livy requisites
+  hosts: master_node
+  tasks:
+    - name: Install unzip
+      apt:
+        name: unzip
+      become: yes
+
 - name: Spark requisites
   hosts: all
   tasks:
